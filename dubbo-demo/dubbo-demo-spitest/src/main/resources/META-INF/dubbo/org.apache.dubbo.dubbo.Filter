@@ -1,0 +1,3 @@
+auth=org.apache.dubbo.dubbo.impl.AuthFilter
+monitor=org.apache.dubbo.dubbo.impl.MonitorFilter
+request=org.apache.dubbo.dubbo.impl.RequestFilter

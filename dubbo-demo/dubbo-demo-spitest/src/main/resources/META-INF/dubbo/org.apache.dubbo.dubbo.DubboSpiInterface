@@ -1,0 +1,7 @@
+# config
+dubbotest1=org.apache.dubbo.dubbo.impl.Test1DubboSpiImpl
+dubbotest2=org.apache.dubbo.dubbo.impl.Test2DubboSpiImpl
+# wrapper 前面点的spi都会使用此wrapper增强
+wrapper=org.apache.dubbo.dubbo.MyWrapper
+#自适应实现
+adaptive=org.apache.dubbo.dubbo.impl.AdaptiveDubboSpiImpl

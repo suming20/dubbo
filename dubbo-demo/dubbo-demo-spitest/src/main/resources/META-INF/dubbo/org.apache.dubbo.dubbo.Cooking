@@ -1,0 +1,2 @@
+gas=org.apache.dubbo.dubbo.impl.GasCooking
+natual=org.apache.dubbo.dubbo.impl.NatualGasCooking
