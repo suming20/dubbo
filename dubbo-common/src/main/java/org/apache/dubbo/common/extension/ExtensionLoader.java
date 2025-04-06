@@ -616,6 +616,7 @@ public class ExtensionLoader<T> {
                         createAdaptiveInstanceError);
             }
 
+            // 自适应也只有一个实例
             synchronized (cachedAdaptiveInstance) {
                 instance = cachedAdaptiveInstance.get();
                 if (instance == null) {
@@ -674,7 +675,7 @@ public class ExtensionLoader<T> {
             // 完成扩展点的inject操作
             injectExtension(instance);
 
-            // 完成对扩展点的包装
+            // 完成对扩展点的包装 wrap默认为true
             if (wrap) {
 
                 List<Class<?>> wrapperClassesList = new ArrayList<>();
@@ -696,6 +697,7 @@ public class ExtensionLoader<T> {
                 }
             }
 
+            // lifecycle initialization 初始化
             initExtension(instance);
             return instance; // 返回最终的扩展实例
         } catch (Throwable t) {
@@ -715,6 +717,7 @@ public class ExtensionLoader<T> {
         }
 
         try {
+            // set方法必需是public
             for (Method method : instance.getClass().getMethods()) {
                 if (!isSetter(method)) { // 仅支持set注入
                     continue;
@@ -727,6 +730,7 @@ public class ExtensionLoader<T> {
                     continue;
                 }
 
+                // 拿到set的类型
                 Class<?> pt = method.getParameterTypes()[0];
                 // 判断set的基本类型，跳过
                 if (ReflectUtils.isPrimitives(pt)) {
@@ -738,6 +742,7 @@ public class ExtensionLoader<T> {
                  * {@link Inject#enable} == false will skip inject property phase
                  * {@link Inject#InjectType#ByName} default inject by name
                  */
+                // 获取属性名称 getXxx
                 String property = getSetterProperty(method);
                 Inject inject = method.getAnnotation(Inject.class);
                 if (inject == null) {
@@ -762,6 +767,16 @@ public class ExtensionLoader<T> {
 
     private void injectValue(T instance, Method method, Class<?> pt, String property) {
         try {
+            /**
+             * 要给当前实例注入另一个实例
+             * objectFactory 解决的是注入的实例从哪来的问题
+             * spi对象池      spring ioc容器  其他对象池
+             * 所以，objectFactory，本身也是用SPI实现的
+             *  1. 在dubbo-common模块中提供了adaptive和从spi对象池中注入的实例
+             * @see SpiExtensionFactory
+             *  2. 在dubbo-config-spring模块中提供了，从spring容器中获取注入实例的实现
+             * @see SpringExtensionFactory
+             */
             Object object = objectFactory.getExtension(pt, property);
             if (object != null) {
                 method.invoke(instance, object);
@@ -1114,6 +1129,7 @@ public class ExtensionLoader<T> {
     @SuppressWarnings("unchecked")
     private T createAdaptiveExtension() {
         try {
+            // 反射创建，也可以自动注入
             return injectExtension((T) getAdaptiveExtensionClass().newInstance());
         } catch (Exception e) {
             throw new IllegalStateException("Can't create adaptive extension " + type + ", cause: " + e.getMessage(), e);
@@ -1129,8 +1145,10 @@ public class ExtensionLoader<T> {
     }
 
     private Class<?> createAdaptiveExtensionClass() {
+        // 根据接口，默认扩展点名称生成扩展点代码
         String code = new AdaptiveClassCodeGenerator(type, cachedDefaultName).generate();
         ClassLoader classLoader = findClassLoader();
+        // 编译
         org.apache.dubbo.common.compiler.Compiler compiler =
                 ExtensionLoader.getExtensionLoader(org.apache.dubbo.common.compiler.Compiler.class).getAdaptiveExtension();
         return compiler.compile(code, classLoader);
