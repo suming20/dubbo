@@ -42,6 +42,7 @@ public class Request {
     private Object mData;
 
     public Request() {
+        // 请求的唯一id
         mId = newId();
     }
 

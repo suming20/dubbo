@@ -84,7 +84,7 @@ import static org.springframework.util.ClassUtils.resolveClassName;
  * @see BeanDefinitionRegistryPostProcessor
  * @since 2.7.7
  */
-public class ServiceClassPostProcessor implements BeanDefinitionRegistryPostProcessor, EnvironmentAware,
+public class  ServiceClassPostProcessor implements BeanDefinitionRegistryPostProcessor, EnvironmentAware,
         ResourceLoaderAware, BeanClassLoaderAware {
 
     private static final List<Class<? extends Annotation>> serviceAnnotationTypes = asList(
@@ -122,12 +122,14 @@ public class ServiceClassPostProcessor implements BeanDefinitionRegistryPostProc
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 
+        // 注册dubbo的启动器
         // @since 2.7.5
         registerInfrastructureBean(registry, DubboBootstrapApplicationListener.BEAN_NAME, DubboBootstrapApplicationListener.class);
 
         Set<String> resolvedPackagesToScan = resolvePackagesToScan(packagesToScan);
 
         if (!CollectionUtils.isEmpty(resolvedPackagesToScan)) {
+            // 注册@DubboService等相关的注解
             registerServiceBeans(resolvedPackagesToScan, registry);
         } else {
             if (logger.isWarnEnabled()) {
@@ -275,13 +277,16 @@ public class ServiceClassPostProcessor implements BeanDefinitionRegistryPostProc
 
         Class<?> beanClass = resolveClass(beanDefinitionHolder);
 
+        // 拿到是哪个注解
         Annotation service = findServiceAnnotation(beanClass);
 
         /**
          * The {@link AnnotationAttributes} of @DubboService annotation
          */
+        // 拿到注解的属性值
         AnnotationAttributes serviceAnnotationAttributes = getAnnotationAttributes(service, false, false);
 
+        // 解析出要暴露的接口
         Class<?> interfaceClass = resolveServiceInterfaceClass(serviceAnnotationAttributes, beanClass);
 
         String annotatedServiceBeanName = beanDefinitionHolder.getBeanName();

@@ -879,10 +879,12 @@ public class DubboBootstrap {
         if (started.compareAndSet(false, true)) {
             destroyed.set(false);
             ready.set(false);
+            // 各种初始化
             initialize();
             if (logger.isInfoEnabled()) {
                 logger.info(NAME + " is starting...");
             }
+            // 导出Dubbo服务，对外暴露
             // 1. export Dubbo Services
             exportServices();
 
@@ -1073,6 +1075,7 @@ public class DubboBootstrap {
             ServiceConfig serviceConfig = (ServiceConfig) sc;
             serviceConfig.setBootstrap(this);
 
+            // 异步导出
             if (exportAsync) {
                 ExecutorService executor = executorRepository.getServiceExporterExecutor();
                 Future<?> future = executor.submit(() -> {

@@ -64,6 +64,7 @@ public abstract class DubboBeanUtils {
      */
     public static void registerCommonBeans(BeanDefinitionRegistry registry) {
 
+        // client的主要处理
         // Since 2.5.7 Register @Reference Annotation Bean Processor as an infrastructure Bean
         registerInfrastructureBean(registry, ReferenceAnnotationBeanPostProcessor.BEAN_NAME,
                 ReferenceAnnotationBeanPostProcessor.class);
@@ -83,6 +84,7 @@ public abstract class DubboBeanUtils {
         // registerInfrastructureBean(registry, DubboBootstrapApplicationListener.BEAN_NAME,
         //        DubboBootstrapApplicationListener.class);
 
+        // dubbo开始工作的入口处理程序
         registerInfrastructureBean(registry, DubboApplicationListenerRegistrar.BEAN_NAME,
                 DubboApplicationListenerRegistrar.class);
 
