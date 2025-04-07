@@ -124,6 +124,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
     /**
      * The interface proxy reference
      */
+    // 远程代理
     private transient volatile T ref;
 
     /**
@@ -375,6 +376,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             }
 
             if (urls.size() == 1) {
+                // 1个注册中心  得到invoker：服务发现将具体的提供者包装成invoker
                 invoker = REF_PROTOCOL.refer(interfaceClass, urls.get(0));
             } else {
                 List<Invoker<?>> invokers = new ArrayList<Invoker<?>>();

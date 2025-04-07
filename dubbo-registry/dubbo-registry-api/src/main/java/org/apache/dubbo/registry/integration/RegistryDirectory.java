@@ -94,6 +94,7 @@ public class RegistryDirectory<T> extends DynamicDirectory<T> {
         setConsumerUrl(url);
         CONSUMER_CONFIGURATION_LISTENER.addNotifyListener(this);
         referenceConfigurationListener = new ReferenceConfigurationListener(this, url);
+        // 订阅，当前对象RegistryDirectory就是NotifyListener; registry是ListenerRegistryWrapper类
         registry.subscribe(url, this);
     }
 

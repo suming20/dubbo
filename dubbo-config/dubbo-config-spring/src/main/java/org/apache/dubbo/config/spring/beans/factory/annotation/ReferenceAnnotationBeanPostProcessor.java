@@ -162,6 +162,7 @@ public class ReferenceAnnotationBeanPostProcessor extends AbstractAnnotationBean
 
         cacheInjectedReferenceBean(referenceBean, injectedElement);
 
+        // referenceBean.get() 是核心，内部完成代理的生成，服务的引用等操作
         return getBeanFactory().applyBeanPostProcessorsAfterInitialization(referenceBean.get(), referenceBeanName);
     }
 
