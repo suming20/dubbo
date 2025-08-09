@@ -8,7 +8,7 @@ import org.apache.dubbo.common.extension.SPI;
  * @author suming
  * @since 2025/4/4 20:01
  */
-@SPI("natual")
+@SPI("gas")
 // @SPI
 public interface Cooking {
 

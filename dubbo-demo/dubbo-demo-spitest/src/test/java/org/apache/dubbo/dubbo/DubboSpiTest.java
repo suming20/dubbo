@@ -45,7 +45,8 @@ public class DubboSpiTest {
         ExtensionLoader<Cooking> extensionLoader = ExtensionLoader.getExtensionLoader(Cooking.class);
         Cooking spiInterface = extensionLoader.getAdaptiveExtension();
         URL url = new URL("dubbo", "localhost", 9999);
-        url.addParameter("stove", "gas");
+        url = url.addParameter("stove", "natual");
+        // URL url = URL.valueOf("dubbo://localhost:9999?stove=gas");
         String stove = spiInterface.stove(url);
         System.out.println(stove);
     }
